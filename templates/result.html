@@ -1,0 +1,241 @@
+{% extends "base.html" %}
+{% block title %}Résultat - Revue de Mémoires{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1><i class="bi bi-clipboard-check"></i> Résultat de l'analyse</h1>
+    <div>
+        <a href="{{ url_for('student_detail', student_id=student.id) }}" class="btn btn-outline-secondary">
+            <i class="bi bi-person"></i> Historique {{ student.prenom }}
+        </a>
+        <a href="{{ url_for('review') }}" class="btn btn-primary">
+            <i class="bi bi-plus-lg"></i> Nouvelle revue
+        </a>
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-header">
+        <strong>{{ student.prenom }} {{ student.nom }}</strong> &mdash;
+        Étape : <span class="badge bg-primary">{{ etape_labels.get(review.etape, review.etape) }}</span>
+        &mdash; {{ review.created_at[:16] }}
+        {% if review.filename %}
+        <small class="text-muted ms-2">({{ review.filename }})</small>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Grille des critères -->
+<div class="card mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <span><i class="bi bi-list-check"></i> Grille d'évaluation</span>
+        <div>
+            <button class="btn btn-sm btn-outline-primary" onclick="toggleAllCriteres(true)">Tout cocher</button>
+            <button class="btn btn-sm btn-outline-secondary" onclick="toggleAllCriteres(false)">Tout décocher</button>
+        </div>
+    </div>
+    <div class="card-body p-0">
+        <table class="table table-hover mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th style="width: 45px"><i class="bi bi-envelope-check"></i></th>
+                    <th style="width: 80px">Statut</th>
+                    <th>Critère</th>
+                    <th>Commentaire</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% set current_cat = namespace(value='') %}
+            {% for c in review.criteria_results %}
+                {% if c.categorie != current_cat.value %}
+                    {% set current_cat.value = c.categorie %}
+                    <tr class="table-secondary">
+                        <td colspan="4"><strong>{{ c.categorie }}</strong></td>
+                    </tr>
+                {% endif %}
+                <tr>
+                    <td>
+                        <input type="checkbox" class="form-check-input critere-check"
+                               data-index="{{ loop.index0 }}" checked onchange="rebuildEmail()">
+                    </td>
+                    <td>
+                        {% if c.statut == 'OK' %}
+                        <span class="badge bg-success">OK</span>
+                        {% elif c.statut == 'Partiel' %}
+                        <span class="badge bg-warning text-dark">Partiel</span>
+                        {% else %}
+                        <span class="badge bg-danger">Non</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <small class="text-muted">{{ c.id }}</small>
+                        {{ c.label }}
+                    </td>
+                    <td><small>{{ c.commentaire }}</small></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Synthèse -->
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card border-success">
+            <div class="card-header text-bg-success d-flex justify-content-between align-items-center">
+                <span><i class="bi bi-check-circle"></i> Points forts</span>
+                <input type="checkbox" class="form-check-input" id="checkPointsForts" checked onchange="rebuildEmail()">
+            </div>
+            <div class="card-body">
+                <p class="whitespace-pre-line">{{ review.points_forts }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card border-warning">
+            <div class="card-header text-bg-warning d-flex justify-content-between align-items-center">
+                <span><i class="bi bi-tools"></i> Améliorations prioritaires</span>
+                <input type="checkbox" class="form-check-input" id="checkAmeliorations" checked onchange="rebuildEmail()">
+            </div>
+            <div class="card-body">
+                <p class="whitespace-pre-line">{{ review.ameliorations }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <span><i class="bi bi-chat-left-text"></i> Appréciation générale</span>
+        <input type="checkbox" class="form-check-input" id="checkAppreciation" checked onchange="rebuildEmail()">
+    </div>
+    <div class="card-body">
+        <p class="whitespace-pre-line">{{ review.appreciation }}</p>
+    </div>
+</div>
+
+<!-- Email à copier -->
+<div class="card mb-4 border-primary">
+    <div class="card-header text-bg-primary d-flex justify-content-between align-items-center">
+        <span><i class="bi bi-envelope"></i> Email prêt à copier</span>
+        <button class="btn btn-light btn-sm" onclick="copyEmail()">
+            <i class="bi bi-clipboard" id="copyIcon"></i> <span id="copyText">Copier</span>
+        </button>
+    </div>
+    <div class="card-body">
+        <pre id="emailContent" class="email-preview"></pre>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const REVIEW_DATA = {
+    prenom: {{ student.prenom | tojson }},
+    etape: {{ etape_labels.get(review.etape, review.etape) | tojson }},
+    criteres: {{ review.criteria_results | tojson }},
+    points_forts: {{ review.points_forts | tojson }},
+    ameliorations: {{ review.ameliorations | tojson }},
+    appreciation: {{ review.appreciation | tojson }},
+};
+
+function rebuildEmail() {
+    const checks = document.querySelectorAll('.critere-check');
+    const inclPointsForts = document.getElementById('checkPointsForts').checked;
+    const inclAmeliorations = document.getElementById('checkAmeliorations').checked;
+    const inclAppreciation = document.getElementById('checkAppreciation').checked;
+
+    // Collect checked criteria
+    const selected = [];
+    checks.forEach(cb => {
+        if (cb.checked) {
+            selected.push(REVIEW_DATA.criteres[parseInt(cb.dataset.index)]);
+        }
+    });
+
+    // Count statuses
+    const okCount = selected.filter(c => c.statut === 'OK').length;
+    const partielCount = selected.filter(c => c.statut === 'Partiel').length;
+    const nonCount = selected.filter(c => c.statut === 'Non').length;
+    const total = selected.length;
+
+    // Group by category
+    const categories = {};
+    selected.forEach(c => {
+        const cat = c.categorie || 'Autre';
+        if (!categories[cat]) categories[cat] = [];
+        categories[cat].push(c);
+    });
+
+    const sep = '\u2500'.repeat(40);
+    let lines = [];
+    lines.push(`Bonjour ${REVIEW_DATA.prenom},\n`);
+    lines.push(`Voici mon retour sur ton travail pour l'\u00e9tape \u00ab ${REVIEW_DATA.etape} \u00bb de ton m\u00e9moire.\n`);
+
+    if (total > 0) {
+        lines.push(`\ud83d\udcca Synth\u00e8se : ${okCount} crit\u00e8re(s) valid\u00e9(s), ${partielCount} partiel(s), ${nonCount} non rempli(s) sur ${total}.\n`);
+        lines.push(sep);
+        lines.push('D\u00c9TAIL PAR CRIT\u00c8RE');
+        lines.push(sep + '\n');
+
+        for (const [cat, crits] of Object.entries(categories)) {
+            lines.push(`\u25b8 ${cat}`);
+            crits.forEach(c => {
+                const icon = c.statut === 'OK' ? '\u2705' : c.statut === 'Partiel' ? '\u26a0\ufe0f' : '\u274c';
+                lines.push(`  ${icon} ${c.label} \u2192 ${c.statut}`);
+                if (c.commentaire) lines.push(`     ${c.commentaire}`);
+            });
+            lines.push('');
+        }
+    }
+
+    if (inclPointsForts) {
+        lines.push(sep);
+        lines.push('\u2705 POINTS FORTS');
+        lines.push(sep);
+        lines.push(REVIEW_DATA.points_forts + '\n');
+    }
+
+    if (inclAmeliorations) {
+        lines.push(sep);
+        lines.push('\ud83d\udd27 AM\u00c9LIORATIONS PRIORITAIRES');
+        lines.push(sep);
+        lines.push(REVIEW_DATA.ameliorations + '\n');
+    }
+
+    if (inclAppreciation) {
+        lines.push(sep);
+        lines.push('\ud83d\udcac APPR\u00c9CIATION G\u00c9N\u00c9RALE');
+        lines.push(sep);
+        lines.push(REVIEW_DATA.appreciation + '\n');
+    }
+
+    lines.push("N'h\u00e9site pas si tu as des questions.");
+    lines.push('Bon courage pour la suite !\n');
+    lines.push('Cordialement,');
+
+    document.getElementById('emailContent').textContent = lines.join('\n');
+}
+
+function toggleAllCriteres(state) {
+    document.querySelectorAll('.critere-check').forEach(cb => cb.checked = state);
+    rebuildEmail();
+}
+
+function copyEmail() {
+    const text = document.getElementById('emailContent').textContent;
+    navigator.clipboard.writeText(text).then(() => {
+        document.getElementById('copyIcon').className = 'bi bi-check-lg';
+        document.getElementById('copyText').textContent = 'Copi\u00e9 !';
+        setTimeout(() => {
+            document.getElementById('copyIcon').className = 'bi bi-clipboard';
+            document.getElementById('copyText').textContent = 'Copier';
+        }, 2000);
+    });
+}
+
+// Build email on page load
+rebuildEmail();
+</script>
+{% endblock %}

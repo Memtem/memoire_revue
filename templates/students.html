@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% block title %}Étudiants - Revue de Mémoires{% endblock %}
+
+{% block content %}
+<h1 class="mb-4"><i class="bi bi-people"></i> Étudiants</h1>
+
+<!-- Formulaire d'ajout -->
+<div class="card mb-4">
+    <div class="card-header"><i class="bi bi-person-plus"></i> Ajouter un étudiant</div>
+    <div class="card-body">
+        <form method="POST" action="{{ url_for('add_student') }}">
+            <div class="row">
+                <div class="col-md-3 mb-2">
+                    <input type="text" class="form-control" name="nom" placeholder="Nom *" required>
+                </div>
+                <div class="col-md-3 mb-2">
+                    <input type="text" class="form-control" name="prenom" placeholder="Prénom *" required>
+                </div>
+                <div class="col-md-3 mb-2">
+                    <input type="email" class="form-control" name="email" placeholder="Email">
+                </div>
+                <div class="col-md-2 mb-2">
+                    <select class="form-select" name="promotion">
+                        <option value="">-- Session --</option>
+                        {% for s in sessions %}
+                        <option value="{{ s }}">{{ s }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-1 mb-2">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="bi bi-plus-lg"></i>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Filtre par session -->
+<div class="d-flex align-items-center mb-3">
+    <label class="me-2 fw-bold"><i class="bi bi-funnel"></i> Filtrer :</label>
+    {% for s in sessions %}
+    <a href="{{ url_for('students', session=s) }}"
+       class="btn btn-sm {{ 'btn-primary' if current_session == s else 'btn-outline-secondary' }} me-1">
+        {{ s }}
+    </a>
+    {% endfor %}
+    {% if current_session %}
+    <a href="{{ url_for('students') }}" class="btn btn-sm btn-outline-danger ms-2">
+        <i class="bi bi-x-lg"></i> Tous
+    </a>
+    {% endif %}
+</div>
+
+<!-- Liste des étudiants -->
+{% if students %}
+<div class="table-responsive">
+    <table class="table table-hover">
+        <thead class="table-light">
+            <tr>
+                <th>Nom</th>
+                <th>Prénom</th>
+                <th>Email</th>
+                <th>Promotion</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for s in students %}
+            <tr>
+                <td>{{ s.nom }}</td>
+                <td>{{ s.prenom }}</td>
+                <td>{{ s.email or '—' }}</td>
+                <td>{{ s.promotion or '—' }}</td>
+                <td>
+                    <a href="{{ url_for('student_detail', student_id=s.id) }}"
+                       class="btn btn-sm btn-outline-primary">
+                        <i class="bi bi-eye"></i> Détail
+                    </a>
+                    <form method="POST" action="{{ url_for('remove_student', student_id=s.id) }}"
+                          class="d-inline" onsubmit="return confirm('Supprimer cet étudiant et toutes ses revues ?')">
+                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="alert alert-info">
+    Aucun étudiant enregistré. Utilisez le formulaire ci-dessus pour en ajouter.
+</div>
+{% endif %}
+{% endblock %}

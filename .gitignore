@@ -1,0 +1,21 @@
+# Environnement virtuel
+venv/
+
+# Variables d'environnement (clé API)
+.env
+
+# Base de données
+data/*.db
+
+# Fichiers uploadés
+uploads/*
+!uploads/.gitkeep
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# IDE
+.vscode/
+.idea/

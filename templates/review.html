@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% block title %}Nouvelle revue - Revue de Mémoires{% endblock %}
+
+{% block content %}
+<h1 class="mb-4"><i class="bi bi-pencil-square"></i> Nouvelle revue</h1>
+
+{% if students %}
+<form method="POST" enctype="multipart/form-data" id="reviewForm">
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label for="student_id" class="form-label">Étudiant</label>
+            <select class="form-select" name="student_id" id="student_id" required>
+                <option value="">-- Choisir un étudiant --</option>
+                {% for s in students %}
+                <option value="{{ s.id }}">{{ s.nom }} {{ s.prenom }}{% if s.promotion %} ({{ s.promotion }}){% endif %}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label for="etape" class="form-label">Étape du mémoire</label>
+            <select class="form-select" name="etape" id="etape" required>
+                <option value="">-- Choisir une étape --</option>
+                {% for key, label in etapes %}
+                <option value="{{ key }}">{{ label }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+
+    <div id="criteresPreview" class="alert alert-info d-none mb-3">
+        <strong><i class="bi bi-info-circle"></i> Critères évalués à cette étape :</strong>
+        <div id="criteresListe" class="mt-2"></div>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Document (.docx ou .pdf)</label>
+        <input type="file" class="form-control" name="document" id="document"
+               accept=".docx,.pdf">
+        <div class="form-text">Formats acceptés : .docx, .pdf (max 16 Mo)</div>
+    </div>
+
+    <div class="mb-3">
+        <label for="pasted_text" class="form-label">Ou coller le texte directement</label>
+        <textarea class="form-control" name="pasted_text" id="pasted_text"
+                  rows="8" placeholder="Collez le contenu du mémoire ici si vous n'avez pas de fichier..."></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-primary btn-lg" id="submitBtn">
+        <i class="bi bi-send"></i> Lancer l'analyse
+    </button>
+
+    <div id="spinner" class="d-none mt-3">
+        <div class="d-flex align-items-center">
+            <div class="spinner-border text-primary me-3" role="status"></div>
+            <div>
+                <strong>Analyse en cours...</strong><br>
+                <small class="text-muted">Claude examine le document selon les critères de l'étape sélectionnée. Cela peut prendre 30 à 60 secondes.</small>
+            </div>
+        </div>
+    </div>
+</form>
+
+{% else %}
+<div class="alert alert-warning">
+    <i class="bi bi-exclamation-triangle"></i>
+    Aucun étudiant enregistré.
+    <a href="{{ url_for('students') }}">Ajoutez d'abord des étudiants</a> avant de lancer une revue.
+</div>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+const CRITERES_MAP = {
+    'sujet': ['Évaluation libre : pertinence, faisabilité, originalité, clarté, pistes de problématiques'],
+    'problematique': ['Problématique (6 critères)'],
+    'plan': ['Problématique (6 critères)', 'Plan / Structure (6 critères)'],
+    'plan_detaille': ['Problématique (6 critères)', 'Plan / Structure (6 critères)', 'Introduction (7 critères)'],
+    'v1': ['Problématique (6)', 'Plan (6)', 'Introduction (7)', 'Partie théorique (6)', 'Partie pratique (7)', 'Préconisations (5)', 'Conclusion (4)', 'Forme (7) — évaluation bienveillante'],
+    'version_finale': ['Problématique (6)', 'Plan (6)', 'Introduction (7)', 'Partie théorique (6)', 'Partie pratique (7)', 'Préconisations (5)', 'Conclusion (4)', 'Forme (7) — évaluation exigeante']
+};
+
+document.getElementById('etape').addEventListener('change', function() {
+    const preview = document.getElementById('criteresPreview');
+    const liste = document.getElementById('criteresListe');
+    const etape = this.value;
+    if (etape && CRITERES_MAP[etape]) {
+        liste.innerHTML = CRITERES_MAP[etape].map(c => '<span class="badge bg-light text-dark me-1 mb-1">' + c + '</span>').join(' ');
+        preview.classList.remove('d-none');
+    } else {
+        preview.classList.add('d-none');
+    }
+});
+</script>
+{% endblock %}

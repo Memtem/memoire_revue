@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% block title %}{{ student.prenom }} {{ student.nom }} - Revue de Mémoires{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1><i class="bi bi-person"></i> {{ student.prenom }} {{ student.nom }}</h1>
+    <a href="{{ url_for('students') }}" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left"></i> Retour
+    </a>
+</div>
+
+<!-- Infos étudiant -->
+<div class="card mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <span><i class="bi bi-info-circle"></i> Informations</span>
+        <button class="btn btn-sm btn-outline-secondary" type="button"
+                data-bs-toggle="collapse" data-bs-target="#editForm">
+            <i class="bi bi-pencil"></i> Modifier
+        </button>
+    </div>
+    <div class="card-body">
+        <p><strong>Email :</strong> {{ student.email or '—' }}</p>
+        <p><strong>Promotion :</strong> {{ student.promotion or '—' }}</p>
+        <p><strong>Inscrit le :</strong> {{ student.created_at[:10] }}</p>
+
+        <div class="collapse mt-3" id="editForm">
+            <form method="POST" action="{{ url_for('edit_student', student_id=student.id) }}">
+                <div class="row">
+                    <div class="col-md-3 mb-2">
+                        <input type="text" class="form-control" name="nom"
+                               value="{{ student.nom }}" placeholder="Nom" required>
+                    </div>
+                    <div class="col-md-3 mb-2">
+                        <input type="text" class="form-control" name="prenom"
+                               value="{{ student.prenom }}" placeholder="Prénom" required>
+                    </div>
+                    <div class="col-md-3 mb-2">
+                        <input type="email" class="form-control" name="email"
+                               value="{{ student.email or '' }}" placeholder="Email">
+                    </div>
+                    <div class="col-md-2 mb-2">
+                        <select class="form-select" name="promotion">
+                            <option value="">-- Session --</option>
+                            {% for s in sessions %}
+                            <option value="{{ s }}" {% if student.promotion == s %}selected{% endif %}>{{ s }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-1 mb-2">
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="bi bi-check-lg"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Progression -->
+<div class="card mb-4">
+    <div class="card-header"><i class="bi bi-graph-up"></i> Progression</div>
+    <div class="card-body">
+        <div class="d-flex flex-wrap gap-3">
+            {% set completed_etapes = reviews | map(attribute='etape') | list %}
+            {% for key, label in etapes %}
+            <div class="text-center">
+                {% if key in completed_etapes %}
+                <div class="rounded-circle bg-success text-white d-flex align-items-center justify-content-center mx-auto"
+                     style="width: 50px; height: 50px;">
+                    <i class="bi bi-check-lg"></i>
+                </div>
+                {% else %}
+                <div class="rounded-circle bg-light border d-flex align-items-center justify-content-center mx-auto"
+                     style="width: 50px; height: 50px;">
+                    <i class="bi bi-circle text-muted"></i>
+                </div>
+                {% endif %}
+                <small class="d-block mt-1">{{ label }}</small>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- Historique des revues -->
+<h2 class="mb-3"><i class="bi bi-clock-history"></i> Historique des revues</h2>
+
+{% if reviews %}
+{% for r in reviews %}
+<div class="card mb-3">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <span>
+            <span class="badge bg-primary">{{ etape_labels.get(r.etape, r.etape) }}</span>
+            &mdash; {{ r.created_at[:16] }}
+            {% if r.filename %}
+            <small class="text-muted">({{ r.filename }})</small>
+            {% endif %}
+        </span>
+        <a href="{{ url_for('result', review_id=r.id) }}" class="btn btn-sm btn-outline-primary">
+            <i class="bi bi-eye"></i> Voir détail
+        </a>
+    </div>
+    <div class="card-body">
+        <!-- Summary badges -->
+        {% set ok = r.criteria_results | selectattr('statut', 'equalto', 'OK') | list | length %}
+        {% set partiel = r.criteria_results | selectattr('statut', 'equalto', 'Partiel') | list | length %}
+        {% set non = r.criteria_results | selectattr('statut', 'equalto', 'Non') | list | length %}
+        <div class="mb-2">
+            <span class="badge bg-success">{{ ok }} OK</span>
+            <span class="badge bg-warning text-dark">{{ partiel }} Partiel</span>
+            <span class="badge bg-danger">{{ non }} Non</span>
+        </div>
+        <p class="mb-0"><small>{{ r.appreciation[:200] }}{% if r.appreciation|length > 200 %}...{% endif %}</small></p>
+    </div>
+</div>
+{% endfor %}
+{% else %}
+<div class="alert alert-info">
+    Aucune revue pour cet étudiant.
+    <a href="{{ url_for('review') }}">Lancer une analyse</a>.
+</div>
+{% endif %}
+{% endblock %}

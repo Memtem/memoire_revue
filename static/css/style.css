@@ -1,0 +1,217 @@
+/* Revue de Mémoires - Palette : bleu sombre, jaune doré, rouge sang */
+
+:root {
+    --bs-primary:       #162040;
+    --bs-primary-rgb:   22, 32, 64;
+    --bs-success:       #c8960c;
+    --bs-success-rgb:   200, 150, 12;
+    --bs-danger:        #7b1818;
+    --bs-danger-rgb:    123, 24, 24;
+    --bs-info:          #1e3a6e;
+    --bs-info-rgb:      30, 58, 110;
+    --bs-warning:       #d4a017;
+    --bs-warning-rgb:   212, 160, 23;
+    --bs-secondary:     #3a3f51;
+    --bs-secondary-rgb: 58, 63, 81;
+    --bs-link-color:    #1e3a6e;
+    --bs-link-hover-color: #c8960c;
+}
+
+body {
+    background-color: #f0f1f4;
+}
+
+/* --- Navbar --- */
+.navbar {
+    background-color: #162040 !important;
+}
+.navbar .nav-link:hover {
+    color: #d4a017 !important;
+}
+.navbar-brand {
+    font-weight: 600;
+    color: #d4a017 !important;
+}
+
+/* --- Boutons --- */
+.btn-primary {
+    background-color: #162040;
+    border-color: #162040;
+    color: #fff;
+}
+.btn-primary:hover, .btn-primary:focus {
+    background-color: #1e3a6e;
+    border-color: #1e3a6e;
+}
+.btn-outline-primary {
+    color: #162040;
+    border-color: #162040;
+}
+.btn-outline-primary:hover {
+    background-color: #162040;
+    color: #fff;
+}
+.btn-outline-secondary {
+    color: #3a3f51;
+    border-color: #3a3f51;
+}
+.btn-outline-secondary:hover {
+    background-color: #3a3f51;
+    color: #fff;
+}
+.btn-outline-danger {
+    color: #7b1818;
+    border-color: #7b1818;
+}
+.btn-outline-danger:hover {
+    background-color: #7b1818;
+    color: #fff;
+}
+
+/* --- Badges --- */
+.badge.bg-primary {
+    background-color: #162040 !important;
+}
+.badge.bg-success {
+    background-color: #c8960c !important;
+    color: #fff !important;
+}
+.badge.bg-warning {
+    background-color: #d4a017 !important;
+    color: #fff !important;
+}
+.badge.bg-danger {
+    background-color: #7b1818 !important;
+}
+.badge.bg-secondary {
+    background-color: #3a3f51 !important;
+}
+.badge.bg-info {
+    background-color: #1e3a6e !important;
+    color: #fff !important;
+}
+
+/* --- Cards stats dashboard --- */
+.card.text-bg-primary {
+    background-color: #162040 !important;
+    color: #fff;
+}
+.card.text-bg-success {
+    background-color: #c8960c !important;
+    color: #fff;
+}
+.card.text-bg-info {
+    background-color: #1e3a6e !important;
+    color: #fff;
+}
+
+/* --- Cards résultat --- */
+.card.border-primary {
+    border-color: #162040 !important;
+}
+.card .card-header.text-bg-primary {
+    background-color: #162040 !important;
+    color: #fff;
+}
+.card.border-success {
+    border-color: #c8960c !important;
+}
+.card .card-header.text-bg-success {
+    background-color: #c8960c !important;
+    color: #fff;
+}
+.card.border-warning {
+    border-color: #7b1818 !important;
+}
+.card .card-header.text-bg-warning {
+    background-color: #7b1818 !important;
+    color: #fff;
+}
+
+/* --- Tables --- */
+.table-secondary {
+    background-color: #e8e9ee !important;
+}
+.table td, .table th {
+    vertical-align: middle;
+}
+.table .badge {
+    font-size: 0.8rem;
+    min-width: 60px;
+}
+
+/* --- Progression circles --- */
+.rounded-circle.bg-success {
+    background-color: #c8960c !important;
+}
+.rounded-circle {
+    transition: background-color 0.2s;
+}
+
+/* --- Cards génériques --- */
+.card {
+    box-shadow: 0 1px 3px rgba(22, 32, 64, 0.12);
+}
+
+/* --- Links --- */
+a {
+    color: #1e3a6e;
+}
+a:hover {
+    color: #c8960c;
+}
+
+/* --- Alerts --- */
+.alert-info {
+    background-color: #dde4ef;
+    border-color: #b8c5dc;
+    color: #162040;
+}
+
+/* --- Spinner --- */
+#spinner {
+    padding: 1.5rem;
+    background: #dde4ef;
+    border-radius: 0.5rem;
+}
+.spinner-border.text-primary {
+    color: #162040 !important;
+}
+
+/* --- Email preview --- */
+.email-preview {
+    background: #fff;
+    border: 1px solid #d0d3da;
+    border-radius: 0.375rem;
+    padding: 1rem;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    max-height: 600px;
+    overflow-y: auto;
+}
+
+.whitespace-pre-line {
+    white-space: pre-line;
+}
+
+/* --- Textarea --- */
+#pasted_text {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 0.9rem;
+}
+
+/* --- Filtre sessions actif --- */
+.btn-sm.btn-primary {
+    background-color: #162040;
+    border-color: #162040;
+}
+
+/* --- Responsive --- */
+@media (max-width: 768px) {
+    .email-preview {
+        font-size: 0.8rem;
+    }
+}

@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block title %}Tableau de bord - Revue de Mémoires{% endblock %}
+
+{% block content %}
+<h1 class="mb-4"><i class="bi bi-speedometer2"></i> Tableau de bord</h1>
+
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card text-bg-primary">
+            <div class="card-body text-center">
+                <h3>{{ stats.total_students }}</h3>
+                <p class="mb-0">Étudiants</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-bg-success">
+            <div class="card-body text-center">
+                <h3>{{ stats.total_reviews }}</h3>
+                <p class="mb-0">Revues effectuées</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-bg-info">
+            <div class="card-body text-center">
+                <h3>{{ stats.reviews_by_etape | length }}</h3>
+                <p class="mb-0">Étapes couvertes</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if stats.reviews_by_etape %}
+<div class="card mb-4 text-bg-primary">
+    <div class="card-header"><i class="bi bi-bar-chart"></i> Revues par étape</div>
+    <div class="card-body">
+        <div class="row">
+        {% for etape_key, count in stats.reviews_by_etape.items() %}
+            <div class="col-md-2 col-4 text-center mb-3">
+                <div class="fs-4 fw-bold text-white">{{ count }}</div>
+                <small class="text-white-50">{{ etape_labels.get(etape_key, etape_key) }}</small>
+            </div>
+        {% endfor %}
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2><i class="bi bi-clock-history"></i> Dernières revues</h2>
+    <a href="{{ url_for('review') }}" class="btn btn-primary">
+        <i class="bi bi-plus-lg"></i> Nouvelle revue
+    </a>
+</div>
+
+{% if recent %}
+<div class="table-responsive">
+    <table class="table table-hover">
+        <thead class="table-light">
+            <tr>
+                <th>Date</th>
+                <th>Étudiant</th>
+                <th>Étape</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for r in recent %}
+            <tr>
+                <td>{{ r.created_at[:16] }}</td>
+                <td>{{ r.prenom }} {{ r.nom }}</td>
+                <td>
+                    <span class="badge bg-secondary">{{ etape_labels.get(r.etape, r.etape) }}</span>
+                </td>
+                <td>
+                    <a href="{{ url_for('result', review_id=r.id) }}" class="btn btn-sm btn-outline-primary">
+                        <i class="bi bi-eye"></i> Voir
+                    </a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="alert alert-info">
+    Aucune revue pour le moment. <a href="{{ url_for('review') }}">Lancer une première analyse</a>.
+</div>
+{% endif %}
+{% endblock %}
