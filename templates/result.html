@@ -170,7 +170,7 @@ function rebuildEmail() {
 
     const sep = '\u2500'.repeat(40);
     let lines = [];
-    lines.push(`Bonjour ${REVIEW_DATA.prenom},\n`);
+    lines.push(`Salutations ${REVIEW_DATA.prenom},\n`);
     lines.push(`Voici mon retour sur ton travail pour l'\u00e9tape \u00ab ${REVIEW_DATA.etape} \u00bb de ton m\u00e9moire.\n`);
 
     if (total > 0) {
@@ -213,7 +213,7 @@ function rebuildEmail() {
 
     lines.push("N'h\u00e9site pas si tu as des questions.");
     lines.push('Bon courage pour la suite !\n');
-    lines.push('Cordialement,');
+    lines.push('Bien \u00e0 toi,');
 
     document.getElementById('emailContent').textContent = lines.join('\n');
 }
