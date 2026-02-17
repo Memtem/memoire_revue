@@ -37,6 +37,31 @@
     </div>
 </div>
 
+<!-- Import depuis fichier -->
+<div class="card mb-4">
+    <div class="card-header"><i class="bi bi-upload"></i> Importer depuis un fichier</div>
+    <div class="card-body">
+        <form method="POST" action="{{ url_for('import_students') }}" enctype="multipart/form-data">
+            <div class="row align-items-center">
+                <div class="col-md-8 mb-2">
+                    <input type="file" class="form-control" name="file" accept=".csv,.xlsx" required>
+                </div>
+                <div class="col-md-4 mb-2">
+                    <button type="submit" class="btn btn-success w-100">
+                        <i class="bi bi-upload"></i> Importer
+                    </button>
+                </div>
+            </div>
+        </form>
+        <small class="text-muted">
+            Formats acceptés : CSV, Excel (.xlsx). Le format "Suivi Mémoire" est détecté automatiquement
+            (la promotion est lue depuis la première ligne, le nom et prénom sont séparés automatiquement).
+            Les fichiers avec colonnes Nom/Prénom séparées sont aussi supportés.
+            Les doublons (même nom + prénom) sont ignorés.
+        </small>
+    </div>
+</div>
+
 <!-- Filtre par session -->
 <div class="d-flex align-items-center mb-3">
     <label class="me-2 fw-bold"><i class="bi bi-funnel"></i> Filtrer :</label>

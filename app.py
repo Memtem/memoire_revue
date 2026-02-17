@@ -8,6 +8,7 @@ from werkzeug.utils import secure_filename
 from config import ETAPE_LABELS, ETAPES, MAX_CONTENT_LENGTH, SESSIONS, UPLOAD_DIR
 from document_parser import allowed_file, extract_text
 from export import format_email
+from import_students import import_students_from_file
 from models import (create_review, create_student, delete_review,
                     delete_student, get_all_students, get_previous_reviews,
                     get_recent_reviews, get_review, get_reviews_for_student,
@@ -162,6 +163,42 @@ def add_student():
         return redirect(url_for('students'))
     create_student(nom, prenom, email, promotion)
     flash(f"Étudiant {prenom} {nom} ajouté.", "success")
+    return redirect(url_for('students'))
+
+
+@app.route('/students/import', methods=['POST'])
+def import_students():
+    file = request.files.get('file')
+    if not file or not file.filename:
+        flash("Veuillez sélectionner un fichier.", "danger")
+        return redirect(url_for('students'))
+
+    ext = file.filename.rsplit('.', 1)[-1].lower() if '.' in file.filename else ''
+    if ext not in ('csv', 'xlsx'):
+        flash("Format non supporté. Utilisez un fichier .csv ou .xlsx.", "danger")
+        return redirect(url_for('students'))
+
+    try:
+        file_bytes = file.read()
+        result = import_students_from_file(file_bytes, file.filename)
+    except ValueError as e:
+        flash(str(e), "danger")
+        return redirect(url_for('students'))
+    except Exception as e:
+        flash(f"Erreur lors de l'import : {e}", "danger")
+        return redirect(url_for('students'))
+
+    parts = []
+    parts.append(f"{result['imported']} étudiant(s) importé(s)")
+    if result['skipped_duplicates']:
+        parts.append(f"{result['skipped_duplicates']} doublon(s) ignoré(s)")
+    if result['skipped_errors']:
+        parts.append(f"{result['skipped_errors']} ligne(s) en erreur")
+    flash(', '.join(parts) + '.', 'success' if result['imported'] else 'warning')
+
+    for err in result['errors'][:5]:
+        flash(err, 'warning')
+
     return redirect(url_for('students'))
 
 

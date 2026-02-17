@@ -44,6 +44,16 @@ def get_all_students():
     return rows
 
 
+def find_student_by_name(nom, prenom):
+    conn = get_db()
+    row = conn.execute(
+        "SELECT * FROM students WHERE LOWER(TRIM(nom)) = LOWER(TRIM(?)) AND LOWER(TRIM(prenom)) = LOWER(TRIM(?))",
+        (nom, prenom)
+    ).fetchone()
+    conn.close()
+    return row
+
+
 def get_student(student_id):
     conn = get_db()
     row = conn.execute(
