@@ -7,6 +7,7 @@ L'outil permet aux formateurs d'evaluer les travaux des apprenants a chaque etap
 ## Fonctionnalites
 
 - **Gestion des etudiants** : ajout, modification, suppression, filtrage par promotion
+- **Gestion des revues** : consultation, suppression depuis l'historique etudiant ou le tableau de bord
 - **Analyse automatisee par IA** : evaluation du document selon une grille de criteres adaptee a l'etape du memoire (sujet, problematique, plan, plan detaille, V1, version finale)
 - **Grille de 48 criteres** repartis en 9 categories : problematique, plan, introduction, partie theorique, partie pratique, preconisations, conclusion, forme et redaction
 - **Verification RNCP AMOA** : a l'etape sujet, verification que l'apprenant mentionne au moins 3 competences du referentiel RNCP35269 (46 competences)
@@ -134,6 +135,7 @@ Les variables d'environnement sont definies dans le fichier `.env` :
 3. **Consulter le resultat** : criteres evalues, points forts, ameliorations, appreciation generale
 4. **Copier l'email** genere automatiquement pour l'envoyer a l'apprenant
 5. **Suivre la progression** via la fiche etudiant qui centralise l'historique des revues
+6. **Supprimer une revue** via le bouton poubelle depuis l'historique etudiant ou le tableau de bord (avec confirmation)
 
 ## Licence
 
