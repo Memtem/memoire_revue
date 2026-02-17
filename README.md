@@ -9,6 +9,7 @@ L'outil permet aux formateurs d'evaluer les travaux des apprenants a chaque etap
 - **Gestion des etudiants** : ajout, modification, suppression, filtrage par promotion
 - **Analyse automatisee par IA** : evaluation du document selon une grille de criteres adaptee a l'etape du memoire (sujet, problematique, plan, plan detaille, V1, version finale)
 - **Grille de 48 criteres** repartis en 9 categories : problematique, plan, introduction, partie theorique, partie pratique, preconisations, conclusion, forme et redaction
+- **Verification RNCP AMOA** : a l'etape sujet, verification que l'apprenant mentionne au moins 3 competences du referentiel RNCP35269 (46 competences)
 - **Suivi de progression** : prise en compte des retours precedents pour mesurer l'evolution de l'apprenant
 - **Generation d'email** : formatage automatique du retour en email structure, pret a copier
 - **Import de documents** : support des formats `.docx` et `.pdf`, ou saisie directe du texte
@@ -18,12 +19,17 @@ L'outil permet aux formateurs d'evaluer les travaux des apprenants a chaque etap
 
 | Etape | Criteres evalues |
 |---|---|
-| Sujet | Evaluation libre (pertinence, faisabilite, originalite) |
+| Sujet | 7 criteres : pertinence AMOA, perimetre, faisabilite, originalite, formulation du titre, pistes de problematiques, ancrage RNCP (min. 3 competences) |
 | Problematique | 6 criteres |
 | Plan | 12 criteres (problematique + plan) |
 | Plan detaille | 19 criteres (+ introduction) |
 | V1 | 48 criteres (evaluation bienveillante) |
 | Version finale | 48 criteres (evaluation exigeante) |
+
+### Distinction sujet / problematique
+
+- **Sujet** : futur titre du memoire, theme general et englobant. L'apprenant propose un perimetre large de reflexion.
+- **Problematique** : question de recherche precise et delimitee, formulee a l'etape suivante.
 
 ## Stack technique
 
