@@ -26,7 +26,7 @@ def format_email(student, etape, review):
         categories[cat].append(c)
 
     lines = []
-    lines.append(f"Bonjour {prenom},\n")
+    lines.append(f"Salutations {prenom},\n")
     lines.append(f"Voici mon retour sur ton travail pour l'étape « {etape_label} » de ton mémoire.\n")
 
     # Summary
@@ -69,6 +69,6 @@ def format_email(student, etape, review):
 
     lines.append("N'hésite pas si tu as des questions.")
     lines.append("Bon courage pour la suite !\n")
-    lines.append("Cordialement,")
+    lines.append("Bien à toi,")
 
     return '\n'.join(lines)
