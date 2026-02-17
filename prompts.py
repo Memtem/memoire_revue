@@ -211,14 +211,80 @@ IMPORTANT : Évalue CHAQUE critère listé ci-dessus. Le nombre de critères dan
 
 def _build_sujet_prompt(document_text, previous_reviews=None):
     """Prompt spécifique pour l'évaluation du sujet (évaluation libre)."""
-    return f"""Analyse le sujet de mémoire suivant. Il n'y a pas de grille de critères formelle à cette étape.
+    return f"""Analyse le sujet de mémoire suivant.
 
-Évalue librement :
-- La pertinence du sujet par rapport à un mémoire professionnel
-- La faisabilité (accès aux données, terrain d'étude)
+IMPORTANT — DISTINCTION SUJET / PROBLÉMATIQUE :
+Le « sujet » est le futur TITRE du mémoire. Il définit le thème général et le périmètre large de la réflexion. Il est plus généraliste et englobant que la problématique.
+La « problématique » (évaluée à une étape ultérieure) est une question de recherche précise, délimitée, à laquelle le mémoire devra répondre.
+À cette étape, l'apprenant propose uniquement son SUJET (titre). Il n'a pas encore formulé de problématique. Tu dois donc évaluer la qualité du sujet en tant que titre de mémoire, sans exiger de problématique. Tu peux en revanche suggérer des pistes de problématiques que ce sujet pourrait soulever.
+
+Évalue les points suivants :
+- La pertinence du sujet par rapport à un mémoire professionnel en AMOA
+- Le périmètre : le sujet est-il suffisamment cadré pour un mémoire tout en restant assez large pour permettre une réflexion approfondie ?
+- La faisabilité (accès aux données, terrain d'étude envisageable)
 - L'originalité et l'intérêt du sujet
-- La clarté de la formulation
-- Les pistes de problématiques possibles
+- La clarté et la qualité de la formulation en tant que titre de mémoire
+- Les pistes de problématiques que ce sujet pourrait soulever (suggestions pour l'étape suivante)
+- L'ancrage dans le référentiel de compétences RNCP AMOA (voir ci-dessous)
+
+RÉFÉRENTIEL DES 46 COMPÉTENCES RNCP - Consultant AMOA (RNCP35269) :
+
+BC01 - Etude des besoins métier et études fonctionnelles :
+1. Réaliser un diagnostic de la situation existante en décrivant et en évaluant les forces et faiblesses de l'organisation, des processus et du SI existants
+2. Modéliser des processus métiers en définissant des cas d'utilisation afin de cadrer le périmètre global du projet
+3. Détailler la cible métier en termes d'organisation, de processus et de SI sur la base d'une étude comparative de différents scénarios de changement
+4. Recueillir et formaliser les besoins métier en utilisant diverses techniques de collecte et de formalisation de l'information
+5. Rationaliser la gestion des besoins en utilisant des outils informatiques pour industrialiser la gestion des besoins métier
+6. Etudier des solutions informatiques en élaborant une grille de choix pour comparer plusieurs solutions
+7. Modéliser une architecture fonctionnelle en formalisant les composants du SI et leurs interactions
+8. Réaliser ou valider l'analyse fonctionnelle d'une solution informatique en décrivant les fonctionnalités attendues et les règles de gestion
+
+BC02 - Test des solutions informatiques :
+9. Définir la stratégie de test d'une solution informatique en précisant les modalités des procédures tests
+10. Concevoir le plan de tests fonctionnel d'une solution informatique en élaborant des scénarios de tests
+11. Concevoir le plan de tests métier pour couvrir les process métier
+12. Constituer un patrimoine de tests de non-régression (TNR)
+13. Exécuter des scénarios de test en analysant les résultats des tests
+14. Exécuter des tests métier en accompagnant les utilisateurs dans le déroulement de ces tests
+15. Suivre la résolution des anomalies en assurant la remontée et la qualification des anomalies
+16. Faire un bilan des tests réalisés en détaillant les résultats obtenus
+17. Faire des tests post-mise en service de la solution informatique
+18. Faciliter la gestion et l'automatisation des tests en utilisant des outils informatiques
+19. Accompagner la mise en œuvre des processus de tests (DevOps, Intégration Continue)
+
+BC03 - Coordination et gestion de projet :
+20. Définir les objectifs et les enjeux du projet au niveau de l'organisation, des processus et du SI
+21. Définir la valeur ajoutée et la rentabilité du projet (retour sur investissement)
+22. Définir une organisation projet en choisissant une méthodologie adaptée
+23. Définir les risques associés à un projet en les priorisant
+24. Définir le planning d'un projet en tenant compte des différents chantiers et du chemin critique
+25. Définir la gestion documentaire à mettre en œuvre dans le projet
+26. Préparer les comités de pilotage ou de direction
+27. Suivre le budget d'un projet en mettant en place des outils de suivi budgétaire
+28. Coordonner les activités du projet en fonction de la méthodologie
+29. Gérer les conflits au sein de l'équipe projet
+30. Assurer une bonne communication ascendante et descendante au sein de l'équipe projet
+31. Identifier les parties prenantes et catégoriser les utilisateurs et acteurs impactés
+32. Réaliser une étude d'impact sur les activités des groupes d'utilisateurs
+33. Accompagner le changement en planifiant des actions de communication et de formation
+34. Définir le support utilisateur à mettre en place une fois le projet en production
+35. Etablir une stratégie de déploiement de la solution informatique
+
+BC04 - Travail en contexte Agile :
+36. Personnifier les différentes catégories d'utilisateurs (Persona)
+37. Définir la vision du Produit informatique pour évaluer l'opportunité du lancement du projet
+38. Formaliser une liste initiale des besoins métier sous forme de Product Backlog (épopées et récits utilisateurs)
+39. Animer une réunion de planification de sprint
+40. Gérer le product backlog (ajout, modification, suppression, repriorisation des user stories)
+41. Collecter le feedback des utilisateurs lors des revues de sprint
+42. Définir les hypothèses et le périmètre du produit minimum nécessaire (MVP, MMF, MMR, MMP)
+43. Définir des jalons de mise à disposition des versions majeures (plan de release)
+44. Animer les réunions d'équipes (cérémonies Agile)
+45. S'assurer que toutes les parties prenantes comprennent et acceptent la méthodologie Agile retenue
+46. Définir les rôles et responsabilités des membres d'une équipe Agile à l'échelle
+
+VÉRIFICATION OBLIGATOIRE - COMPÉTENCES RNCP :
+L'apprenant DOIT mentionner au moins 3 compétences du référentiel ci-dessus que son sujet de mémoire permettra de mobiliser. Vérifie si le document mentionne explicitement des compétences du référentiel RNCP AMOA. Si au moins 3 compétences sont identifiées, le critère est "OK". Si 1 ou 2 sont identifiées, le critère est "Partiel". Si aucune n'est mentionnée, le critère est "Non". Dans tous les cas, liste les compétences identifiées (par leur numéro et intitulé) et suggère des compétences pertinentes par rapport au sujet si l'apprenant n'en a pas mentionné suffisamment.
 
 SUJET PROPOSÉ :
 \"\"\"
@@ -230,38 +296,52 @@ Réponds en JSON avec EXACTEMENT ce format :
   "criteres": [
     {{
       "id": "S1",
-      "label": "Pertinence du sujet",
+      "label": "Pertinence du sujet en tant que titre de mémoire AMOA",
       "categorie": "Sujet",
       "statut": "OK",
-      "commentaire": "Commentaire détaillé"
+      "commentaire": "Le sujet est-il en lien avec le métier de consultant AMOA et adapté à un mémoire professionnel ?"
     }},
     {{
       "id": "S2",
-      "label": "Faisabilité",
+      "label": "Périmètre et cadrage du sujet",
       "categorie": "Sujet",
       "statut": "OK",
-      "commentaire": "Commentaire détaillé"
+      "commentaire": "Le sujet est-il suffisamment cadré sans être trop restrictif ? Permet-il une réflexion approfondie ?"
     }},
     {{
       "id": "S3",
-      "label": "Originalité et intérêt",
+      "label": "Faisabilité",
       "categorie": "Sujet",
       "statut": "OK",
-      "commentaire": "Commentaire détaillé"
+      "commentaire": "L'apprenant pourra-t-il accéder à un terrain d'étude et à des données pour traiter ce sujet ?"
     }},
     {{
       "id": "S4",
-      "label": "Clarté de la formulation",
+      "label": "Originalité et intérêt",
       "categorie": "Sujet",
       "statut": "OK",
-      "commentaire": "Commentaire détaillé"
+      "commentaire": "Le sujet apporte-t-il un angle intéressant ou une plus-value par rapport aux sujets classiques ?"
     }},
     {{
       "id": "S5",
-      "label": "Pistes de problématiques",
+      "label": "Qualité de la formulation du titre",
       "categorie": "Sujet",
       "statut": "OK",
-      "commentaire": "Propositions de problématiques possibles"
+      "commentaire": "Le titre est-il clair, concis et évocateur du contenu du mémoire ?"
+    }},
+    {{
+      "id": "S6",
+      "label": "Pistes de problématiques envisageables",
+      "categorie": "Sujet",
+      "statut": "OK",
+      "commentaire": "Quelles questions de recherche précises ce sujet pourrait-il soulever ? (suggestions pour l'étape suivante)"
+    }},
+    {{
+      "id": "S7",
+      "label": "Ancrage dans le référentiel RNCP AMOA (min. 3 compétences)",
+      "categorie": "Référentiel RNCP",
+      "statut": "OK",
+      "commentaire": "Liste des compétences RNCP identifiées dans le document et suggestions de compétences pertinentes si moins de 3 sont mentionnées"
     }}
   ],
   "points_forts": "Points forts du sujet",
