@@ -8,10 +8,10 @@ from werkzeug.utils import secure_filename
 from config import ETAPE_LABELS, ETAPES, MAX_CONTENT_LENGTH, SESSIONS, UPLOAD_DIR
 from document_parser import allowed_file, extract_text
 from export import format_email
-from models import (create_review, create_student, delete_student,
-                    get_all_students, get_previous_reviews, get_recent_reviews,
-                    get_review, get_reviews_for_student, get_stats,
-                    get_student, init_db, update_student)
+from models import (create_review, create_student, delete_review,
+                    delete_student, get_all_students, get_previous_reviews,
+                    get_recent_reviews, get_review, get_reviews_for_student,
+                    get_stats, get_student, init_db, update_student)
 from prompts import get_criteres_by_categorie
 from review_engine import analyze_document
 
@@ -125,6 +125,18 @@ def result(review_id):
     student = get_student(rev['student_id'])
     return render_template('result.html', review=rev, student=student,
                            etape_labels=ETAPE_LABELS)
+
+
+@app.route('/reviews/<int:review_id>/delete', methods=['POST'])
+def remove_review(review_id):
+    rev = get_review(review_id)
+    if not rev:
+        flash("Revue introuvable.", "danger")
+        return redirect(url_for('index'))
+    student_id = rev['student_id']
+    delete_review(review_id)
+    flash("Revue supprimée.", "success")
+    return redirect(url_for('student_detail', student_id=student_id))
 
 
 # --- Students ---

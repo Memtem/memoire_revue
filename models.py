@@ -92,6 +92,13 @@ def create_review(student_id, etape, filename, document_text,
     return review_id
 
 
+def delete_review(review_id):
+    conn = get_db()
+    conn.execute("DELETE FROM reviews WHERE id = ?", (review_id,))
+    conn.commit()
+    conn.close()
+
+
 def get_review(review_id):
     conn = get_db()
     row = conn.execute(
